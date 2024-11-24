@@ -23,7 +23,12 @@
 <li>SQL Server: Banco de dados utilizado para armazenar as transações financeiras e dados dos usuários.</li>
 <li>ASP.NET Core MVC: Para estruturação das rotas e controladores da API.</li>
 
-<h3>Frontend - STATUS: 🔴 Não iniciado</h3>
+<h3>Frontend - STATUS: 🟠 Desenvolvimento</h3>
+<li>Razor Pages: Utilizado para criar páginas dinâmicas, permitindo a interação entre o frontend e o backend de forma simples e eficiente. Permite a construção de páginas HTML com lógica embutida no servidor.</li>
+<li>HTML5: A base estrutural das páginas, utilizando as semânticas mais recentes do HTML para garantir acessibilidade e um melhor entendimento do conteúdo para navegadores e mecanismos de busca.</li>
+<li>CSS3: Estilização das páginas utilizando propriedades modernas de CSS, como flexbox, grid, e transições, para garantir um design atrativo e responsivo.</li>
+<li>Bootstrap 5: Framework CSS popular para criar interfaces modernas e responsivas de maneira rápida. Utilizado para componentes prontos, como botões, formulários, barras de navegação e layout fluído.</li>
+<li>JavaScript: Linguagem de programação utilizada para manipulação do DOM, criando interatividade nas páginas, como validação de formulários e atualização dinâmica de conteúdos sem recarregar a página.</li>
 <h3>Prototipagem - STATUS: 🟠 Desenvolvimento</h3>
 <li>Figma</li>
 <li><a href="https://www.figma.com/design/ppjMaPtWDa7tapsQR0ptgR/Figma-basics?node-id=1669-162202&node-type=canvas&t=USEkEO1QJgdf5K2W-0" target="_blank">Acesse o design no Figma</a></li>
