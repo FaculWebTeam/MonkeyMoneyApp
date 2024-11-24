@@ -3,8 +3,8 @@
 # Projeto de Desenvolvimento Web 2 | MonkiMoney 🐒💸
 <p><b>Membros da equipe:</b></p>
 <li>Alisson Sousa Ferreira</li>
-<li>Pollyana Fortunato Keller </li>
 <li>Lucas Patricio da Silva</li>
+<li>Pollyana Fortunato Keller </li>
 <li>Rayana Caroline da Silva</li>
 
 <h3>Sobre o projeto</h3>
