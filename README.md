@@ -31,7 +31,7 @@
 <li>JavaScript: Linguagem de programação utilizada para manipulação do DOM, criando interatividade nas páginas, como validação de formulários e atualização dinâmica de conteúdos sem recarregar a página.</li>
 <h3>Prototipagem - STATUS: 🟠 Desenvolvimento</h3>
 <li>Figma</li>
-<li><a href="https://www.figma.com/design/ppjMaPtWDa7tapsQR0ptgR/Figma-basics?node-id=1669-162202&node-type=canvas&t=USEkEO1QJgdf5K2W-0" target="_blank">Acesse o design no Figma</a></li>
+<li><a href="https://www.figma.com/design/cQbVID5jHFaUfLBhSTZzL4/MonkiMoneyApp?node-id=0-1&node-type=canvas&t=dfIQa5Vv7jrGOUjI-0" target="_blank">Acesse o design no Figma</a></li>
 
 ## Clone esse repositório
 ```bash
