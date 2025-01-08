@@ -29,7 +29,7 @@
 <li>CSS3: Estilização das páginas utilizando propriedades modernas de CSS, como flexbox, grid, e transições, para garantir um design atrativo e responsivo.</li>
 <li>Bootstrap 5: Framework CSS popular para criar interfaces modernas e responsivas de maneira rápida. Utilizado para componentes prontos, como botões, formulários, barras de navegação e layout fluído.</li>
 <li>JavaScript: Linguagem de programação utilizada para manipulação do DOM, criando interatividade nas páginas, como validação de formulários e atualização dinâmica de conteúdos sem recarregar a página.</li>
-<h3>Prototipagem - STATUS: 🟠 Desenvolvimento</h3>
+<h3>Prototipagem - STATUS: 🟢 Concluído</h3>
 <li>Figma</li>
 <li><a href="https://www.figma.com/design/cQbVID5jHFaUfLBhSTZzL4/MonkiMoneyApp?node-id=0-1&node-type=canvas&t=dfIQa5Vv7jrGOUjI-0" target="_blank">Acesse o design no Figma</a></li>
 
