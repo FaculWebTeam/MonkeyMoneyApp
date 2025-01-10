@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
+using MonkeyMoneyApp.Repository.Interface;
 
 
 namespace ApiMonkeyMoney.Controllers
@@ -10,23 +11,23 @@ namespace ApiMonkeyMoney.Controllers
     [ApiController]
     public class MetaController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMetaRepository _repository;
 
-        public MetaController(ApplicationDbContext context)
+        public MetaController(IMetaRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public Task<List<Meta>> GetMetas()
         {
-            return _context.Metas.FromSqlRaw("SELECT * FROM Metas").ToListAsync();
+            return _repository.GetMetas();
         }
 
         [HttpGet("{id}")]
         public Task<List<Meta>> GetMetaById(int id)
         {
-            return _context.Metas.FromSqlInterpolated($"SELECT * FROM Metas WHERE Id = {id}").ToListAsync();
+            return _repository.GetMetaById(id);
         }
 
         [HttpPost]
@@ -34,10 +35,9 @@ namespace ApiMonkeyMoney.Controllers
         {
             if (meta == null)
             {
-                return BadRequest("Meta inválida.");
+                return BadRequest("Meta inválida");
             }
-            await _context.Metas.AddAsync(meta);
-            await _context.SaveChangesAsync();
+            var metaPost = await _repository.Post(meta);
 
             return CreatedAtAction(nameof(Post), new { id = meta.Id }, meta);
         }
@@ -45,29 +45,29 @@ namespace ApiMonkeyMoney.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Meta meta)
         {
-            var existeMeta = await _context.Metas.FindAsync(id);
-            if(existeMeta == null)
+            var metaAtualizada = await _repository.Put(id, meta);
+            if (metaAtualizada != null)
             {
-                return NotFound("Meta não encontrada.");
+                return Ok(metaAtualizada);
             }
-            _context.Entry(existeMeta).CurrentValues.SetValues(meta);
-            await _context.SaveChangesAsync();
-
-            var metaAtualizada = await _context.Metas.FindAsync(id);
-            return Ok(metaAtualizada);
+            else
+            {
+                return BadRequest("Erro ao atualizar meta");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var meta = await _context.Metas.FindAsync(id);
-            if (meta == null)
+            var meta = await _repository.Delete(id);
+            if (meta != null)
             {
-                return NotFound("Meta não encontrada.");
+                return Ok();
             }
-            _context.Remove(meta);
-            await _context.SaveChangesAsync();
-            return Ok();
+            else
+            {
+                return BadRequest("Erro ao deletar meta");
+            }
         }
     }
 }

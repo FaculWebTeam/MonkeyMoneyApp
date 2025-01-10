@@ -2,6 +2,7 @@
 using ApiMonkeyMoney.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MonkeyMoneyApp.Repository.Interface;
 
 
 namespace ApiMonkeyMoney.Controllers
@@ -10,23 +11,23 @@ namespace ApiMonkeyMoney.Controllers
     [ApiController]
     public class BancoController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IBancoRepository _repository;
 
-        public BancoController(ApplicationDbContext context)
+        public BancoController(IBancoRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public Task<List<Banco>> GetBancos()
         {
-            return _context.Bancos.FromSqlRaw("SELECT * FROM Bancos").ToListAsync();
+            return _repository.GetBancos();
         }
 
         [HttpGet("{id}")]
         public Task<List<Banco>> GetBancoById(int id)
         {
-            return _context.Bancos.FromSqlInterpolated($"SELECT * FROM Bancos WHERE Id = {id}").ToListAsync();
+            return _repository.GetBancoById(id);
         }
 
         [HttpPost]
@@ -36,8 +37,7 @@ namespace ApiMonkeyMoney.Controllers
             {
                 return BadRequest("Banco inválido.");
             }
-            await _context.Bancos.AddAsync(banco);
-            await _context.SaveChangesAsync();
+            await _repository.Post(banco);
 
             return CreatedAtAction(nameof(Post), new { id = banco.Id }, banco);
         }
@@ -50,31 +50,23 @@ namespace ApiMonkeyMoney.Controllers
                 return BadRequest("id inexistente");
             }
 
-            var existeBanco = await _context.Bancos.FindAsync(id);
-            if (existeBanco == null)
-            {
-                return NotFound("Banco não encontrado.");
-            }
+            var bancoAtualizado = await _repository.Put(id, banco);
 
-            _context.Entry(existeBanco).CurrentValues.SetValues(banco);
-
-            await _context.SaveChangesAsync();
-
-            var bancoAtualizado = await _context.Bancos.FindAsync(id);
             return Ok(bancoAtualizado);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var banco = await _context.Bancos.FindAsync(id);
-            if (banco == null)
+            var response = await _repository.Delete(id);
+            if (response != null)
             {
-                return NotFound("Banco não encontrado. ");
+                return Ok(response);
             }
-            _context.Bancos.Remove(banco);
-            await _context.SaveChangesAsync();
-            return Ok();
+            else 
+            {
+                return BadRequest("Erro na deleção");
+            }
         }
     }
 }

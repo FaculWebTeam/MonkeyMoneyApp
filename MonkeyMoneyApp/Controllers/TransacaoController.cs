@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
+using MonkeyMoneyApp.Repository.Interface;
 
 namespace ApiMonkeyMoney.Controllers
 {
@@ -9,23 +10,23 @@ namespace ApiMonkeyMoney.Controllers
     [ApiController]
     public class TransacaoController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITransacaoRepository _repository;
 
-        public TransacaoController(ApplicationDbContext context)
+        public TransacaoController(ITransacaoRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public Task<List<Transacao>> GetTransacoes()
         {
-            return _context.Transacoes.FromSqlRaw("SELECT * FROM Transacoes").ToListAsync();
+            return _repository.GetTransacoes();
         }
 
         [HttpGet("{id}")]
         public Task<List<Transacao>> GetTransacoesById(int id)
         {
-            return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").ToListAsync();
+            return _repository.GetTransacoesById(id);
         }
 
         [HttpPost]
@@ -35,8 +36,7 @@ namespace ApiMonkeyMoney.Controllers
             {
                 return BadRequest("Transação inválida.");
             }
-            await _context.Transacoes.AddAsync(transacao);
-            await _context.SaveChangesAsync();
+            await _repository.Post(transacao);
 
             return CreatedAtAction(nameof(Post), new { id = transacao.Id }, transacao);
         }
@@ -49,32 +49,30 @@ namespace ApiMonkeyMoney.Controllers
                 return BadRequest("id inexistente");
             }
 
-            var existeTransacao = await _context.Transacoes.FindAsync(id);
-            if (existeTransacao == null)
+            var transacaoAtualizada = await _repository.Update(id, transacao);
+            if (transacaoAtualizada != null)
             {
-                return NotFound("Transação não encontrada.");
+                return Ok(transacaoAtualizada);
             }
-
-            _context.Entry(existeTransacao).CurrentValues.SetValues(transacao);
-
-            await _context.SaveChangesAsync();
-
-            var transacaoAtualizada = await _context.Transacoes.FindAsync(id);
-            return Ok(transacaoAtualizada);
+            else
+            {
+                return BadRequest("Erro ao atualizar transacao");
+            }
         }
 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var transacao = await _context.Transacoes.FindAsync(id);
-            if (transacao == null)
+            var transacao = await _repository.Delete(id);
+            if (transacao != null)
             {
-                return NotFound("Transaçao não encontrada.");
+                return Ok();
             }
-            _context.Transacoes.Remove(transacao);
-            await _context.SaveChangesAsync();
-            return Ok();
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
