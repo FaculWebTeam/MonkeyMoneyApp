@@ -8,7 +8,7 @@ namespace MonkeyMoneyApp.Repository.Interface
         Task<List<Meta>> GetMetas();
         Task<List<Meta>> GetMetaById(int id);
         Task<Meta> Post([FromBody] Meta meta);
-        Task<Meta> Put(int id, [FromBody] Meta meta);
+        Task<Meta> Put(int id, [FromBody] Meta meta); 
         Task<Meta> Delete(int id);
     }
 }
