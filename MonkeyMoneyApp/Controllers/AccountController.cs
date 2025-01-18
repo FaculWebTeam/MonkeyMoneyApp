@@ -61,7 +61,8 @@ namespace MonkeyMoneyApp.Controllers
                     model.Email, model.Senha, model.GuardarSenha, false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "home");
+                    return Redirect("/PaginaInicial/layoutPagina.html");
+
                 }
 
                 ModelState.AddModelError(string.Empty, "Login inválido");
