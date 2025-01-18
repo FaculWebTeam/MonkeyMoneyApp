@@ -27,10 +27,9 @@ namespace MonkeyMoneyApp.Repository
             await _context.SaveChangesAsync();
             return banco;
         }
-
-        public Task<List<Banco>> GetBancoById(int id)
+        public async Task<Banco> GetBancoById(int id)
         {
-            return _context.Bancos.FromSqlInterpolated($"SELECT * FROM Bancos WHERE Id = {id}").ToListAsync();
+            return await _context.Bancos.FindAsync(id);
         }
 
         public Task<List<Banco>> GetBancos()
@@ -42,11 +41,10 @@ namespace MonkeyMoneyApp.Repository
         {
             await _context.Bancos.AddAsync(banco);
             await _context.SaveChangesAsync();
-
             return banco;
         }
 
-        public async Task<Banco> Put(int id, [FromBody] Banco banco)
+        public async Task<Banco> Put(int id, Banco banco)
         {
             if (id != banco.Id)
             {

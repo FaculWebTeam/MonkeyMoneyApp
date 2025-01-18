@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MonkiMoney</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MonkeyMoneyApp.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffecb3, #e8f5e9);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .pb-3 {
+            padding-bottom: 1rem !important;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100%;
+            top: 60px; /* Ajuste para que o menu não sobreponha a navbar */
+            left: 0;
+            padding-top: 20px;
+        }
+
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+                .sidebar ul li {
+                    padding: 10px;
+                    text-align: center;
+                }
+
+                    .sidebar ul li a {
+                        color: #43a047;
+                        text-decoration: none;
+                        display: block;
+                    }
+
+                        .sidebar ul li a:hover {
+                            background-color: #c8e6c9;
+                            color: white;
+                        }
+
+        .main-content {
+            margin-left: 200px; /* Espaço para o sidebar */
+            padding: 20px;
+        }
+
+        .navbar {
+            background-color: #43a047;
+            color: white;
+            border-bottom: 3px solid #2e7d32;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: white;
+            font-size: 1.1rem;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: #c8e6c9;
+            }
+
+        .navbar-toggler {
+            border-color: white;
+        }
+
+        .navbar-toggler-icon {
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        .logout-button {
+            color: white;
+        }
+
+            .logout-button:hover {
+                color: #c8e6c9;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">MonkiMoney</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link">@User.Identity.Name</a>
+                        </li>
+                        <li class="nav-item">
+                            <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="nav-link btn btn-link logout-button">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="sidebar">
+        <!-- Conteúdo do menu lateral -->
+        <ul>
+            <li><a href="/Banco/Index">Lista de Bancos</a></li>
+            <li><a href="/Banco/Create">Criar Banco</a></li>
+            <!-- Adicione outros links conforme necessário -->
+        </ul>
+    </div>
+    <div class="main-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

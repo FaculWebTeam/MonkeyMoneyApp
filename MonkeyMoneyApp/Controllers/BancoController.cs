@@ -1,72 +1,115 @@
-﻿using MonkeyMoneyApp.Data;
-using ApiMonkeyMoney.Models;
+﻿using ApiMonkeyMoney.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Repository.Interface;
 
-
-namespace ApiMonkeyMoney.Controllers
+[Route("[controller]")]
+public class BancoController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BancoController : ControllerBase
+    private readonly IBancoRepository _repository;
+
+    public BancoController(IBancoRepository repository)
     {
-        private readonly IBancoRepository _repository;
+        _repository = repository;
+    }
 
-        public BancoController(IBancoRepository repository)
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index()
+    {
+        var bancos = await _repository.GetBancos();
+        return View(bancos);
+    }
+
+    [HttpGet("Details/{id}")]
+    public async Task<IActionResult> Details(int id)
+    {
+        var banco = await _repository.GetBancoById(id);
+        if (banco == null)
         {
-            _repository = repository;
+            return NotFound();
         }
 
-        [HttpGet]
-        public Task<List<Banco>> GetBancos()
+        return View(banco);
+    }
+
+    [HttpGet("Create")]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create(Banco banco)
+    {
+        if (!ModelState.IsValid)
         {
-            return _repository.GetBancos();
+            return View(banco);
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Banco>> GetBancoById(int id)
+        if (banco == null)
         {
-            return _repository.GetBancoById(id);
+            return BadRequest("Banco inválido.");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Banco banco)
-        {
-            if (banco == null)
-            {
-                return BadRequest("Banco inválido.");
-            }
-            await _repository.Post(banco);
+        await _repository.Post(banco);
 
-            return CreatedAtAction(nameof(Post), new { id = banco.Id }, banco);
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet("Edit/{id}")]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var banco = await _repository.GetBancoById(id);
+        if (banco == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Banco banco)
+        return View(banco);
+    }
+
+    [HttpPost("Edit/{id}")]
+    public async Task<IActionResult> Edit(int id, Banco banco)
+    {
+        if (id != banco.Id)
         {
-            if (id != banco.Id)
-            {
-                return BadRequest("id inexistente");
-            }
-
-            var bancoAtualizado = await _repository.Put(id, banco);
-
-            return Ok(bancoAtualizado);
+            return BadRequest("ID inválido.");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        if (!ModelState.IsValid)
         {
-            var response = await _repository.Delete(id);
-            if (response != null)
-            {
-                return Ok(response);
-            }
-            else 
-            {
-                return BadRequest("Erro na deleção");
-            }
+            return View(banco);
+        }
+
+        await _repository.Put(id, banco);
+
+        TempData["SuccessMessage"] = "Banco atualizado com sucesso!";
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet("Delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var banco = await _repository.GetBancoById(id);
+        if (banco == null)
+        {
+            return NotFound();
+        }
+
+        return View(banco);
+    }
+
+    [HttpPost("Delete/{id}")]
+    public async Task<IActionResult> ConfirmDelete(int id)
+    {
+        var response = await _repository.Delete(id);
+        if (response != null)
+        {
+            TempData["SuccessMessage"] = "Banco deletado com sucesso!";
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return BadRequest("Erro na deleção");
         }
     }
 }
