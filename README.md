@@ -35,7 +35,7 @@
 
 ## Clone esse repositório
 ```bash
-git clone https://github.com/FaculWebTeam/ApiMonkeyMoney.git
+git clone https://github.com/FaculWebTeam/MonkeyMoneyApp.git
 ```
 ## 🔧 Manual de uso
 <h3>Inserir uma ConnectionStrings</h3>
