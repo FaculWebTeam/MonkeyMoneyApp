@@ -1,9 +1,7 @@
 ﻿using ApiMonkeyMoney.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
-using System.Diagnostics.CodeAnalysis;
 
 namespace MonkeyMoneyApp.Repository
 {
@@ -28,9 +26,9 @@ namespace MonkeyMoneyApp.Repository
             return meta;
         }
 
-        public Task<List<Meta>> GetMetaById(int id)
+        public async Task<Meta> GetMetaById(int id)
         {
-            return _context.Metas.FromSqlInterpolated($"SELECT * FROM Metas WHERE Id = {id}").ToListAsync();
+            return await _context.Metas.FromSqlInterpolated($"SELECT * FROM Metas WHERE Id = {id}").FirstOrDefaultAsync();
         }
 
         public Task<List<Meta>> GetMetas()
@@ -38,14 +36,14 @@ namespace MonkeyMoneyApp.Repository
             return _context.Metas.FromSqlRaw("SELECT * FROM Metas").ToListAsync();
         }
 
-        public async Task<Meta> Post([FromBody] Meta meta)
+        public async Task<Meta> Post(Meta meta)
         {
-                await _context.Metas.AddAsync(meta);
-                await _context.SaveChangesAsync();
-                return meta;
+            await _context.Metas.AddAsync(meta);
+            await _context.SaveChangesAsync();
+            return meta;
         }
 
-        public async Task<Meta> Put(int id, [FromBody] Meta meta)
+        public async Task<Meta> Put(int id, Meta meta)
         {
             var existeMeta = await _context.Metas.FindAsync(id);
             if (existeMeta == null)

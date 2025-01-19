@@ -1,15 +1,11 @@
 ﻿using ApiMonkeyMoney.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
-
 
 namespace ApiMonkeyMoney.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MetaController : ControllerBase
+    [Route("[controller]")]
+    public class MetaController : Controller
     {
         private readonly IMetaRepository _repository;
 
@@ -18,55 +14,95 @@ namespace ApiMonkeyMoney.Controllers
             _repository = repository;
         }
 
-        [HttpGet]
-        public Task<List<Meta>> GetMetas()
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index()
         {
-            return _repository.GetMetas();
+            var metas = await _repository.GetMetas();
+            return View(metas);
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Meta>> GetMetaById(int id)
+        [HttpGet("Details/{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            return _repository.GetMetaById(id);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Meta meta)
-        {
+            var meta = await _repository.GetMetaById(id);
             if (meta == null)
             {
-                return BadRequest("Meta inválida");
+                return NotFound();
             }
-            var metaPost = await _repository.Post(meta);
 
-            return CreatedAtAction(nameof(Post), new { id = meta.Id }, meta);
+            return View(meta);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Meta meta)
+        [HttpGet("Create")]
+        public IActionResult Create()
         {
-            var metaAtualizada = await _repository.Put(id, meta);
-            if (metaAtualizada != null)
-            {
-                return Ok(metaAtualizada);
-            }
-            else
-            {
-                return BadRequest("Erro ao atualizar meta");
-            }
+            return View();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create(Meta meta)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(meta);
+            }
+
+            await _repository.Post(meta);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var meta = await _repository.GetMetaById(id);
+            if (meta == null)
+            {
+                return NotFound();
+            }
+
+            return View(meta);
+        }
+
+        [HttpPost("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id, Meta meta)
+        {
+            if (id != meta.Id)
+            {
+                return BadRequest("ID inválido.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(meta);
+            }
+
+            await _repository.Put(id, meta);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var meta = await _repository.Delete(id);
-            if (meta != null)
+            var meta = await _repository.GetMetaById(id);
+            if (meta == null)
             {
-                return Ok();
+                return NotFound();
+            }
+
+            return View(meta);
+        }
+
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            var response = await _repository.Delete(id);
+            if (response != null)
+            {
+                return RedirectToAction("Index");
             }
             else
             {
-                return BadRequest("Erro ao deletar meta");
+                return BadRequest("Erro na deleção");
             }
         }
     }
