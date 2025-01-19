@@ -56,11 +56,20 @@
         }
 
         .logout-button {
-            color: transparent; /* Remove a cor do botão logout */
+            color: #000000; /* Cor do botão logout */
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: block;
+            width: 100%;
+            border: none;
+            background: none;
         }
 
             .logout-button:hover {
-                color: transparent; /* Remove a cor ao passar o mouse */
+                background-color: #c8e6c9; /* Fundo verde ao passar o mouse */
+                color: #2e7d32; /* Cor do texto ao passar o mouse */
             }
 
         .pb-3 {
@@ -76,6 +85,9 @@
             top: 0; /* Ajuste para sobrepor a navbar */
             left: 0;
             padding-top: 20px; /* Espaço reduzido para a navbar */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
             .sidebar .brand {
@@ -91,6 +103,7 @@
             .sidebar ul {
                 list-style-type: none;
                 padding: 0;
+                flex-grow: 1;
             }
 
                 .sidebar ul li {
@@ -117,6 +130,21 @@
             margin-left: 220px;
             padding: 20px;
         }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-top: 80px; /* Ajusta a logo mais para baixo */
+        }
+
+            .sidebar .logo img {
+                max-width: 70%;
+                height: auto;
+            }
+
+        .logout-section {
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +163,7 @@
                         </li>
                         <li class="nav-item">
                             <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                                <button type="submit" class="nav-link btn btn-link logout-button">Logout</button>
+                                <button type="submit" class="nav-link btn btn-link logout-button">SAIR</button>
                             </form>
                         </li>
                     </ul>
@@ -144,16 +172,28 @@
         </nav>
     </header>
     <div class="sidebar">
-        <div class="brand">MonkiMoney</div>
-        <ul>
-            <li><a href="/Resumo/Index">Resumo</a></li>
-            <li><a href="/Banco/Index">Lista de Bancos</a></li>
-            <li><a href="/Banco/Create">Criar Banco</a></li>
-            <li><a href="/Meta/Index">Lista de Metas</a></li>
-            <li><a href="/Meta/Create">Criar Meta</a></li>
-            <li><a href="/Transacao/Index">Lista de Transações</a></li>
-            <li><a href="/Transacao/Create">Criar Transação</a></li>
-        </ul>
+        <div>
+            <div class="brand">MonkiMoney</div>
+            <ul>
+                <li><a href="/Resumo/Index">Resumo</a></li>
+                <li><a href="/Banco/Index">Lista de Bancos</a></li>
+                <li><a href="/Banco/Create">Criar Banco</a></li>
+                <li><a href="/Meta/Index">Lista de Metas</a></li>
+                <li><a href="/Meta/Create">Criar Meta</a></li>
+                <li><a href="/Transacao/Index">Lista de Transações</a></li>
+                <li><a href="/Transacao/Create">Criar Transação</a></li>
+            </ul>
+        </div>
+        <div>
+            <div class="logo">
+                <img src="~/images/logo.png" alt="Logo" />
+            </div>
+            <div class="logout-section">
+                <form method="post" asp-controller="Account" asp-action="Logout">
+                    <button type="submit" class="logout-button">SAIR</button>
+                </form>
+            </div>
+        </div>
     </div>
     <div class="main-content">
         <main role="main" class="pb-3">
