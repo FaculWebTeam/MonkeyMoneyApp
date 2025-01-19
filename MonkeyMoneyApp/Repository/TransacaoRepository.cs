@@ -27,14 +27,14 @@ namespace MonkeyMoneyApp.Repository
             return transacao;
         }
 
-        public Task<List<Transacao>> GetTransacoes()
+        public async Task<List<Transacao>> GetTransacoes()
         {
-            return _context.Transacoes.FromSqlRaw("SELECT * FROM Transacoes").ToListAsync();
+            return await _context.Transacoes.Include(t => t.Banco).ToListAsync();
         }
 
-        public Task<List<Transacao>> GetTransacoesById(int id)
+        public Task<Transacao> GetTransacoesById(int id)
         {
-            return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").ToListAsync();
+            return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").FirstOrDefaultAsync();
         }
 
         public async Task<Transacao> Post([FromBody] Transacao transacao)

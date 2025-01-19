@@ -1,77 +1,114 @@
 ﻿using ApiMonkeyMoney.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
 
 namespace ApiMonkeyMoney.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TransacaoController : ControllerBase
+    [Route("[controller]")]
+    public class TransacaoController : Controller
     {
         private readonly ITransacaoRepository _repository;
+        private readonly IBancoRepository _bancoRepository;
 
-        public TransacaoController(ITransacaoRepository repository)
+        public TransacaoController(ITransacaoRepository repository, IBancoRepository bancoRepository)
         {
             _repository = repository;
+            _bancoRepository = bancoRepository;
         }
 
-        [HttpGet]
-        public Task<List<Transacao>> GetTransacoes()
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index()
         {
-            return _repository.GetTransacoes();
+            var transacoes = await _repository.GetTransacoes();
+            return View(transacoes);
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Transacao>> GetTransacoesById(int id)
+        [HttpGet("Details/{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            return _repository.GetTransacoesById(id);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Transacao transacao)
-        {
+            var transacao = await _repository.GetTransacoesById(id);
             if (transacao == null)
             {
-                return BadRequest("Transação inválida.");
+                return NotFound();
             }
-            await _repository.Post(transacao);
 
-            return CreatedAtAction(nameof(Post), new { id = transacao.Id }, transacao);
+            return View(transacao);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Transacao transacao)
+        [HttpGet("Create")]
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.Bancos = await _bancoRepository.GetBancos();
+            return View();
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create(Transacao transacao)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Bancos = await _bancoRepository.GetBancos();
+                return View(transacao);
+            }
+
+            await _repository.Post(transacao);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var transacao = await _repository.GetTransacoesById(id);
+            if (transacao == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Bancos = await _bancoRepository.GetBancos();
+            return View(transacao);
+        }
+
+        [HttpPost("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id, Transacao transacao)
         {
             if (id != transacao.Id)
             {
-                return BadRequest("id inexistente");
+                return BadRequest("ID inválido.");
             }
 
-            var transacaoAtualizada = await _repository.Update(id, transacao);
-            if (transacaoAtualizada != null)
+            if (!ModelState.IsValid)
             {
-                return Ok(transacaoAtualizada);
+                ViewBag.Bancos = await _bancoRepository.GetBancos();
+                return View(transacao);
             }
-            else
-            {
-                return BadRequest("Erro ao atualizar transacao");
-            }
+
+            await _repository.Update(id, transacao);
+            return RedirectToAction("Index");
         }
 
-
-        [HttpDelete("{id}")]
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var transacao = await _repository.Delete(id);
-            if (transacao != null)
+            var transacao = await _repository.GetTransacoesById(id);
+            if (transacao == null)
             {
-                return Ok();
+                return NotFound();
+            }
+
+            return View(transacao);
+        }
+
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            var response = await _repository.Delete(id);
+            if (response != null)
+            {
+                return RedirectToAction("Index");
             }
             else
             {
-                return NotFound();
+                return BadRequest("Erro na deleção");
             }
         }
     }
