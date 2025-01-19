@@ -1,0 +1,38 @@
+﻿@model ApiMonkeyMoney.ViewModels.ResumoViewModel
+
+@{
+    ViewBag.Title = "Resumo";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Resumo</h2>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Metas</h5>
+                    <p class="card-text">Total Valor Objetivo: @Model.TotalValorObjetivo.ToString("C")</p>
+                    <p class="card-text">Total Valor Atual: @Model.TotalValorAtual.ToString("C")</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Transações</h5>
+                    <p class="card-text">Total de Transações: @Model.TotalTransacoes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Bancos</h5>
+                    <p class="card-text">Total de Bancos: @Model.TotalBancos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
