@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyMoneyApp.Models;
+using System.Threading.Tasks;
 
 namespace MonkeyMoneyApp.Controllers
 {
@@ -15,12 +16,14 @@ namespace MonkeyMoneyApp.Controllers
             _signInManager = signInManager;
         }
 
+        // Ação para exibir a página de registro
         [HttpGet]
         public IActionResult Registro()
         {
             return View();
         }
 
+        // Ação para processar o registro de um novo usuário
         [HttpPost]
         public async Task<IActionResult> Registro(Registro model)
         {
@@ -46,12 +49,14 @@ namespace MonkeyMoneyApp.Controllers
             return View(model);
         }
 
+        // Ação para exibir a página de login
         [HttpGet]
-        public IActionResult Login ()
+        public IActionResult Login()
         {
             return View();
         }
 
+        // Ação para processar o login de um usuário
         [HttpPost]
         public async Task<IActionResult> Login(Login model)
         {
@@ -70,11 +75,56 @@ namespace MonkeyMoneyApp.Controllers
             return View(model);
         }
 
+        // Ação para fazer logout do usuário
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "home");
+            return RedirectToAction("Index", "Home");
+        }
+
+        // Ação para exibir a página de redefinir senha
+        [HttpGet]
+        public IActionResult RedefinirSenha()
+        {
+            return View();
+        }
+
+        // Ação para processar a redefinição de senha
+        [HttpPost]
+        public async Task<IActionResult> RedefinirSenha(RedefinirSenhaViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Verificar se o e-mail existe
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    // Remover a senha atual e adicionar a nova
+                    var resetResult = await _userManager.RemovePasswordAsync(user);
+                    if (resetResult.Succeeded)
+                    {
+                        var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NovaSenha);
+                        if (addPasswordResult.Succeeded)
+                        {
+                            return RedirectToAction("Login", "Account"); // Redireciona para a página de login
+                        }
+                        foreach (var error in addPasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Erro ao remover senha anterior.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "E-mail não encontrado.");
+                }
+            }
+            return View(model);
         }
     }
 }
