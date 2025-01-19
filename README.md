@@ -37,7 +37,7 @@
 ```bash
 git clone https://github.com/FaculWebTeam/ApiMonkeyMoney.git
 ```
-## Manual de uso
+## 🔧 Manual de uso
 <h3>Inserir uma ConnectionStrings</h3>
 <p> Vá até o arquivo "appsettings.json" na raiz do projeto e insira a conexão com o banco dentro da propriedade "DefaultConnection" no array de "ConnectionStrings"</p>
 <h3>Criar as tabelas</h3>
