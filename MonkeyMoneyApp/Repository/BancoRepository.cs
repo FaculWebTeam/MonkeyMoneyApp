@@ -37,6 +37,13 @@ namespace MonkeyMoneyApp.Repository
             return _context.Bancos.FromSqlRaw("SELECT * FROM Bancos").ToListAsync();
         }
 
+        public async Task<List<Banco>> GetBancoByName(string name)
+        {
+            return await _context.Bancos
+                                 .Where(b => EF.Functions.Like(b.Nome, $"%{name}%"))
+                                 .ToListAsync();
+        }
+
         public async Task<Banco> Post([FromBody] Banco banco)
         {
             await _context.Bancos.AddAsync(banco);

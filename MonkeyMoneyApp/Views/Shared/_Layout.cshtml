@@ -8,74 +8,123 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MonkeyMoneyApp.styles.css" asp-append-version="true" />
 
-
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ffecb3, #e8f5e9);
+            background: linear-gradient(135deg, #ffecb3, #e8f5e9); /* Cor do fundo da página */
             color: #333;
             line-height: 1.6;
         }
+
         header .navbar {
-            background-color: #43a047;
-            color: white;
-            border-bottom: 3px solid #2e7d32;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffecb3; /* Cor sólida para navbar igual ao fundo da parte clara do gradiente */
+            color: transparent; /* Deixa o texto invisível */
+            border-bottom: 0; /* Remove a borda */
+            box-shadow: none; /* Remove a sombra */
         }
 
         header .navbar-brand {
             font-size: 1.5rem;
-            color: white;
+            color: transparent; /* Deixa o texto invisível */
             font-weight: bold;
         }
 
         header .nav-link {
-            color: white;
+            color: transparent; /* Deixa o texto invisível */
             font-size: 1.1rem;
             margin-right: 15px;
             transition: color 0.3s ease;
         }
 
             header .nav-link:hover {
-                color: #c8e6c9;
+                color: transparent; /* Remove a cor ao passar o mouse */
             }
 
         .container {
-            padding-top: 20px; 
+            padding-top: 20px;
             padding-bottom: 20px;
         }
 
         .navbar-toggler {
-            border-color: white;
+            border-color: transparent; /* Remove a borda do ícone do toggle */
         }
 
         .navbar-toggler-icon {
-            background-color: white;
-            border-radius: 2px;
+            background-color: transparent; /* Deixa o ícone invisível */
         }
+
+        .logout-button {
+            color: transparent; /* Deixa o botão de logout invisível */
+        }
+
+            .logout-button:hover {
+                color: transparent; /* Remove a cor ao passar o mouse */
+            }
+
         .pb-3 {
             padding-bottom: 1rem !important;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #ffe082; /* Amarelo menos intenso */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100%;
+            top: 60px;
+            left: 0;
+            padding-top: 20px;
+        }
+
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+                .sidebar ul li {
+                    padding: 10px;
+                    text-align: center;
+                    transition: background-color 0.3s, color 0.3s;
+                }
+
+                    .sidebar ul li a {
+                        color: #000000; /* Letra em preto */
+                        text-decoration: none;
+                        display: block;
+                        font-weight: bold;
+                        padding: 10px;
+                        border-radius: 5px;
+                    }
+
+                        .sidebar ul li a:hover {
+                            background-color: #c8e6c9; /* Fundo verde */
+                            color: #2e7d32; /* Texto verde escuro */
+                        }
+
+        .main-content {
+            margin-left: 220px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light" style="background-color: transparent; border: none;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MonkiMoney</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color: #2e7d32;">MonkiMoney</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon" style="background-color: #2e7d32;"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color: #2e7d32;">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #2e7d32;">Privacy</a>
                         </li>
                     </ul>
                     <partial name="LoginPartial" />
@@ -83,12 +132,14 @@
             </div>
         </nav>
     </header>
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

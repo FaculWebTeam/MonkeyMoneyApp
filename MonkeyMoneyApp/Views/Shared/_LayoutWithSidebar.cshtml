@@ -13,15 +13,55 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ffecb3, #e8f5e9);
+            background: linear-gradient(135deg, #ffecb3, #e8f5e9); /* Cor do fundo da página */
             color: #333;
             line-height: 1.6;
         }
+
+        header .navbar {
+            background-color: transparent; /* Deixa a navbar transparente */
+            color: transparent; /* Remove a cor do texto */
+            border-bottom: 0; /* Remove a borda para eliminar a divisão */
+            box-shadow: none; /* Remove sombra para continuidade */
+        }
+
+        header .navbar-brand {
+            font-size: 1.5rem;
+            color: transparent; /* Remove a cor do texto */
+            font-weight: bold;
+        }
+
+        header .nav-link {
+            color: transparent; /* Remove a cor do texto das opções de navegação */
+            font-size: 1.1rem;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+            header .nav-link:hover {
+                color: transparent; /* Remove a cor ao passar o mouse */
+            }
 
         .container {
             padding-top: 20px;
             padding-bottom: 20px;
         }
+
+        .navbar-toggler {
+            border-color: transparent; /* Remove a borda do ícone do toggle */
+        }
+
+        .navbar-toggler-icon {
+            background-color: transparent; /* Deixa o ícone do toggle invisível */
+        }
+
+        .logout-button {
+            color: transparent; /* Remove a cor do botão logout */
+        }
+
+            .logout-button:hover {
+                color: transparent; /* Remove a cor ao passar o mouse */
+            }
 
         .pb-3 {
             padding-bottom: 1rem !important;
@@ -29,14 +69,24 @@
 
         .sidebar {
             width: 200px;
-            background-color: #ffffff;
+            background-color: #F4E88D;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             position: fixed;
             height: 100%;
-            top: 60px; /* Ajuste para que o menu não sobreponha a navbar */
+            top: 0; /* Ajuste para sobrepor a navbar */
             left: 0;
-            padding-top: 20px;
+            padding-top: 20px; /* Espaço reduzido para a navbar */
         }
+
+            .sidebar .brand {
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #2e7d32;
+                padding: 5px 0; /* Espaço reduzido */
+                background-color: #F4E88D; /* Fundo para destacar o nome do site */
+                border-bottom: 1px solid #2e7d32; /* Borda inferior para destacar */
+            }
 
             .sidebar ul {
                 list-style-type: none;
@@ -46,69 +96,32 @@
                 .sidebar ul li {
                     padding: 10px;
                     text-align: center;
+                    transition: background-color 0.3s, color 0.3s;
                 }
 
                     .sidebar ul li a {
-                        color: #43a047;
+                        color: #000000; /* Letra em preto */
                         text-decoration: none;
                         display: block;
+                        font-weight: bold;
+                        padding: 10px;
+                        border-radius: 5px;
                     }
 
                         .sidebar ul li a:hover {
-                            background-color: #c8e6c9;
-                            color: white;
+                            background-color: #c8e6c9; /* Fundo verde */
+                            color: #2e7d32; /* Texto verde escuro */
                         }
 
         .main-content {
-            margin-left: 200px; /* Espaço para o sidebar */
+            margin-left: 220px;
             padding: 20px;
         }
-
-        .navbar {
-            background-color: #43a047;
-            color: white;
-            border-bottom: 3px solid #2e7d32;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .nav-link {
-            color: white;
-            font-size: 1.1rem;
-            margin-right: 15px;
-            transition: color 0.3s ease;
-        }
-
-            .nav-link:hover {
-                color: #c8e6c9;
-            }
-
-        .navbar-toggler {
-            border-color: white;
-        }
-
-        .navbar-toggler-icon {
-            background-color: white;
-            border-radius: 2px;
-        }
-
-        .logout-button {
-            color: white;
-        }
-
-            .logout-button:hover {
-                color: #c8e6c9;
-            }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">MonkiMoney</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -131,13 +144,15 @@
         </nav>
     </header>
     <div class="sidebar">
+        <div class="brand">MonkiMoney</div>
         <!-- Conteúdo do menu lateral -->
         <ul>
             <li><a href="/Banco/Index">Lista de Bancos</a></li>
             <li><a href="/Banco/Create">Criar Banco</a></li>
             <li><a href="/Meta/Index">Lista de Metas</a></li>
             <li><a href="/Meta/Create">Criar Meta</a></li>
-            <!-- Adicione outros links conforme necessário -->
+            <li><a href="/Transacao/Index">Lista de Transações</a></li>
+            <li><a href="/Transacao/Create">Criar Transação</a></li>
         </ul>
     </div>
     <div class="main-content">

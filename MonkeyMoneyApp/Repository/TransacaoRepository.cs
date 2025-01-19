@@ -32,6 +32,13 @@ namespace MonkeyMoneyApp.Repository
             return await _context.Transacoes.Include(t => t.Banco).ToListAsync();
         }
 
+        public async Task<List<Transacao>> GetBancoByTitle(string title)
+        {
+            return await _context.Transacoes
+                                 .Where(t => EF.Functions.Like(t.Titulo, $"%{title}%"))
+                                 .ToListAsync();
+        }
+
         public Task<Transacao> GetTransacoesById(int id)
         {
             return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").FirstOrDefaultAsync();

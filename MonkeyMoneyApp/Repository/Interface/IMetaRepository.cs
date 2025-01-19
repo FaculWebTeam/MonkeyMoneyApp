@@ -7,6 +7,7 @@ namespace MonkeyMoneyApp.Repository.Interface
     public interface IMetaRepository
     {
         Task<List<Meta>> GetMetas();
+        Task<List<Meta>> GetByName(string name);
         Task<Meta> GetMetaById(int id);
         Task<Meta> Post(Meta meta);
         Task<Meta> Put(int id, Meta meta);

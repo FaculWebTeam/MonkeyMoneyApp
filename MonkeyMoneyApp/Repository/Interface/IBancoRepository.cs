@@ -7,6 +7,7 @@ namespace MonkeyMoneyApp.Repository.Interface
     public interface IBancoRepository
     {
         Task<List<Banco>> GetBancos();
+        Task<List<Banco>> GetBancoByName(string name);
         Task<Banco> GetBancoById(int id);
         Task<Banco> Post(Banco banco);
         Task<Banco> Put(int id, [FromBody] Banco banco);

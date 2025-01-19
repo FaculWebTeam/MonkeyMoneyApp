@@ -8,11 +8,19 @@
 <h2 class="text-center mb-4">Lista de Metas</h2>
 
 <div class="container">
+    <form method="get" action="/Meta/GetByName" class="form-inline mb-4">
+        <div class="input-group">
+            <input type="text" name="name" class="form-control" placeholder="Pesquisar Meta" />
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
                     <th scope="col">Valor Objetivo</th>
                     <th scope="col">Valor Atual</th>
                     <th scope="col">Ações</th>
@@ -23,6 +31,7 @@
                 {
                     <tr>
                         <td>@meta.Id</td>
+                        <td>@meta.Nome</td>
                         <td>@meta.ValorObjetivo</td>
                         <td>@meta.ValorAtual</td>
                         <td>

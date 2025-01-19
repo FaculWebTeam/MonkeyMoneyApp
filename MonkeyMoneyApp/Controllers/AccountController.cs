@@ -36,7 +36,7 @@ namespace MonkeyMoneyApp.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Create", "Banco");
+                    return RedirectToAction("Index", "Transacao");
                 }
                 foreach (var error in result.Errors)
                 {
@@ -61,7 +61,7 @@ namespace MonkeyMoneyApp.Controllers
                     model.Email, model.Senha, model.GuardarSenha, false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "home");
+                    return RedirectToAction("Index", "Transacao");
                 }
 
                 ModelState.AddModelError(string.Empty, "Login inválido");

@@ -1,4 +1,5 @@
 ﻿using ApiMonkeyMoney.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyMoneyApp.Repository.Interface;
 
@@ -11,32 +12,32 @@ public class BancoController : Controller
     {
         _repository = repository;
     }
-
+    [Authorize]
     [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
         var bancos = await _repository.GetBancos();
         return View(bancos);
     }
-
-    [HttpGet("Details/{id}")]
-    public async Task<IActionResult> Details(int id)
+    [Authorize]
+    [HttpGet("GetByName")]
+    public async Task<IActionResult> GetByName(string name)
     {
-        var banco = await _repository.GetBancoById(id);
-        if (banco == null)
+        var bancos = await _repository.GetBancoByName(name);
+        if (bancos == null || !bancos.Any())
         {
             return NotFound();
         }
 
-        return View(banco);
+        return View("Index", bancos); // Retorna a View Index com os resultados da pesquisa
     }
-
+    [Authorize]
     [HttpGet("Create")]
     public IActionResult Create()
     {
         return View();
     }
-
+    [Authorize]
     [HttpPost("Create")]
     public async Task<IActionResult> Create(Banco banco)
     {
@@ -54,7 +55,7 @@ public class BancoController : Controller
 
         return RedirectToAction("Index");
     }
-
+    [Authorize]
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -66,7 +67,7 @@ public class BancoController : Controller
 
         return View(banco);
     }
-
+    [Authorize]
     [HttpPost("Edit/{id}")]
     public async Task<IActionResult> Edit(int id, Banco banco)
     {
@@ -85,7 +86,7 @@ public class BancoController : Controller
         TempData["SuccessMessage"] = "Banco atualizado com sucesso!";
         return RedirectToAction("Index");
     }
-
+    [Authorize]
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -97,7 +98,7 @@ public class BancoController : Controller
 
         return View(banco);
     }
-
+    [Authorize]
     [HttpPost("Delete/{id}")]
     public async Task<IActionResult> ConfirmDelete(int id)
     {

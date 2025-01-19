@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
+using System.Drawing;
 
 namespace MonkeyMoneyApp.Repository
 {
@@ -34,6 +35,13 @@ namespace MonkeyMoneyApp.Repository
         public Task<List<Meta>> GetMetas()
         {
             return _context.Metas.FromSqlRaw("SELECT * FROM Metas").ToListAsync();
+        }
+
+        public async Task<List<Meta>> GetByName(string name)
+        {
+            return await _context.Metas
+                                 .Where(m => EF.Functions.Like(m.Nome, $"%{name}%"))
+                                 .ToListAsync();
         }
 
         public async Task<Meta> Post(Meta meta)

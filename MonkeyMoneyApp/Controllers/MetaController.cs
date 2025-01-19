@@ -1,4 +1,5 @@
 ﻿using ApiMonkeyMoney.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyMoneyApp.Repository.Interface;
 
@@ -13,32 +14,32 @@ namespace ApiMonkeyMoney.Controllers
         {
             _repository = repository;
         }
-
+        [Authorize]
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
             var metas = await _repository.GetMetas();
             return View(metas);
         }
-
-        [HttpGet("Details/{id}")]
-        public async Task<IActionResult> Details(int id)
+        [Authorize]
+        [HttpGet("GetByName")]
+        public async Task<IActionResult> GetByName(string name)
         {
-            var meta = await _repository.GetMetaById(id);
-            if (meta == null)
+            var metas = await _repository.GetByName(name);
+            if (metas == null || !metas.Any())
             {
-                return NotFound();
+                return View("Index", new List<Meta>());
             }
 
-            return View(meta);
+            return View("Index", metas); 
         }
-
+        [Authorize]
         [HttpGet("Create")]
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost("Create")]
         public async Task<IActionResult> Create(Meta meta)
         {
@@ -50,7 +51,7 @@ namespace ApiMonkeyMoney.Controllers
             await _repository.Post(meta);
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -62,7 +63,7 @@ namespace ApiMonkeyMoney.Controllers
 
             return View(meta);
         }
-
+        [Authorize]
         [HttpPost("Edit/{id}")]
         public async Task<IActionResult> Edit(int id, Meta meta)
         {
@@ -79,7 +80,7 @@ namespace ApiMonkeyMoney.Controllers
             await _repository.Put(id, meta);
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -91,7 +92,7 @@ namespace ApiMonkeyMoney.Controllers
 
             return View(meta);
         }
-
+        [Authorize]
         [HttpPost("Delete/{id}")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
