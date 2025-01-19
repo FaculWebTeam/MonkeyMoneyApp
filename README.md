@@ -40,7 +40,7 @@ git clone https://github.com/FaculWebTeam/ApiMonkeyMoney.git
 ## 🔧 Manual de uso
 <h3>Inserir uma ConnectionStrings</h3>
 <p> Vá até o arquivo "appsettings.json" na raiz do projeto e insira a conexão com o banco dentro da propriedade "DefaultConnection" no array de "ConnectionStrings"</p>
-<li>"Server=[inserir o server aqui];Database=MonkiMoneyApp;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"</li>
+<p>"Server=[inserir o server aqui];Database=MonkiMoneyApp;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"</p>
 <h3>Criar as tabelas</h3>
 <li>Em ferramentas, no Visual Studio, clique em "Gerenciador de Pacotes do Nuget" e "Console do Gerenciador de Pacotes</li>
 <li>No console, digite o seguinte comando: update-database</li>
