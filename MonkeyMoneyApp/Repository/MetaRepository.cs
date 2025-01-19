@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
-using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MonkeyMoneyApp.Repository
 {
@@ -15,53 +17,56 @@ namespace MonkeyMoneyApp.Repository
             _context = context;
         }
 
-        public async Task<Meta> Delete(int id)
+        public async Task<Meta> Delete(int id, string userId)
         {
-            var meta = await _context.Metas.FindAsync(id);
+            var meta = await _context.Metas.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
             if (meta == null)
             {
                 return null;
             }
-            _context.Remove(meta);
+            _context.Metas.Remove(meta);
             await _context.SaveChangesAsync();
             return meta;
         }
 
-        public async Task<Meta> GetMetaById(int id)
+        public async Task<Meta> GetMetaById(int id, string userId)
         {
-            return await _context.Metas.FromSqlInterpolated($"SELECT * FROM Metas WHERE Id = {id}").FirstOrDefaultAsync();
+            return await _context.Metas.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
         }
 
-        public Task<List<Meta>> GetMetas()
+        public async Task<List<Meta>> GetMetasByUserId(string userId)
         {
-            return _context.Metas.FromSqlRaw("SELECT * FROM Metas").ToListAsync();
+            return await _context.Metas.Where(m => m.UserId == userId).ToListAsync();
         }
 
-        public async Task<List<Meta>> GetByName(string name)
+        public async Task<List<Meta>> GetByName(string name, string userId)
         {
             return await _context.Metas
-                                 .Where(m => EF.Functions.Like(m.Nome, $"%{name}%"))
+                                 .Where(m => m.UserId == userId && EF.Functions.Like(m.Nome, $"%{name}%"))
                                  .ToListAsync();
         }
 
-        public async Task<Meta> Post(Meta meta)
+        public async Task<Meta> Post(Meta meta, string userId)
         {
+            meta.UserId = userId;
             await _context.Metas.AddAsync(meta);
             await _context.SaveChangesAsync();
             return meta;
         }
 
-        public async Task<Meta> Put(int id, Meta meta)
+        public async Task<Meta> Put(int id, Meta meta, string userId)
         {
-            var existeMeta = await _context.Metas.FindAsync(id);
+            var existeMeta = await _context.Metas.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
             if (existeMeta == null)
             {
                 return null;
             }
+
             _context.Entry(existeMeta).CurrentValues.SetValues(meta);
+
             await _context.SaveChangesAsync();
 
-            var metaAtualizada = await _context.Metas.FindAsync(id);
+            var metaAtualizada = await _context.Metas.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
             return metaAtualizada;
         }
     }

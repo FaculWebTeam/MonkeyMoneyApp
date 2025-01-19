@@ -1,8 +1,10 @@
 ﻿using ApiMonkeyMoney.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
 using MonkeyMoneyApp.Repository.Interface;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MonkeyMoneyApp.Repository
 {
@@ -15,9 +17,9 @@ namespace MonkeyMoneyApp.Repository
             _context = context;
         }
 
-        public async Task<Transacao> Delete(int id)
+        public async Task<Transacao> Delete(int id, string userId)
         {
-            var transacao = await _context.Transacoes.FindAsync(id);
+            var transacao = await _context.Transacoes.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (transacao == null)
             {
                 return null;
@@ -27,34 +29,39 @@ namespace MonkeyMoneyApp.Repository
             return transacao;
         }
 
-        public async Task<List<Transacao>> GetTransacoes()
+        public async Task<List<Transacao>> GetTransacoesByUserId(string userId)
         {
-            return await _context.Transacoes.Include(t => t.Banco).ToListAsync();
+            return await _context.Transacoes.Include(t => t.Banco).Where(t => t.UserId == userId).ToListAsync();
         }
 
-        public async Task<List<Transacao>> GetBancoByTitle(string title)
+        public async Task<List<Transacao>> GetTransacaoByTitle(string title, string userId)
         {
             return await _context.Transacoes
-                                 .Where(t => EF.Functions.Like(t.Titulo, $"%{title}%"))
+                                 .Where(t => t.UserId == userId && EF.Functions.Like(t.Titulo, $"%{title}%"))
                                  .ToListAsync();
         }
 
-        public Task<Transacao> GetTransacoesById(int id)
+        public async Task<Transacao> GetTransacaoById(int id, string userId)
         {
-            return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").FirstOrDefaultAsync();
+            return await _context.Transacoes.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
         }
 
-        public async Task<Transacao> Post([FromBody] Transacao transacao)
+        public async Task<Transacao> Post(Transacao transacao, string userId)
         {
+            transacao.UserId = userId;
             await _context.Transacoes.AddAsync(transacao);
             await _context.SaveChangesAsync();
-
             return transacao;
         }
 
-        public async Task<Transacao> Update(int id, [FromBody] Transacao transacao)
+        public async Task<Transacao> Update(int id, Transacao transacao, string userId)
         {
-            var existeTransacao = await _context.Transacoes.FindAsync(id);
+            if (id != transacao.Id)
+            {
+                return null;
+            }
+
+            var existeTransacao = await _context.Transacoes.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (existeTransacao == null)
             {
                 return null;
@@ -64,7 +71,7 @@ namespace MonkeyMoneyApp.Repository
 
             await _context.SaveChangesAsync();
 
-            var transacaoAtualizada = await _context.Transacoes.FindAsync(id);
+            var transacaoAtualizada = await _context.Transacoes.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             return transacaoAtualizada;
         }
     }

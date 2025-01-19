@@ -28,5 +28,6 @@ namespace ApiMonkeyMoney.Models
         public Banco? Banco { get; set; }
 
         public DateTime Horario { get; set; }
+        public string UserId { get; set; }
     }
 }

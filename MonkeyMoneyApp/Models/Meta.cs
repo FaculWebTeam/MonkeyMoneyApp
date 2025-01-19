@@ -12,5 +12,6 @@ namespace ApiMonkeyMoney.Models
         public float ValorObjetivo { get; set; }
         [Required(ErrorMessage ="O campo {0} é obrigatório")]
         public float ValorAtual { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -6,11 +6,11 @@ namespace MonkeyMoneyApp.Repository.Interface
 {
     public interface IMetaRepository
     {
-        Task<List<Meta>> GetMetas();
-        Task<List<Meta>> GetByName(string name);
-        Task<Meta> GetMetaById(int id);
-        Task<Meta> Post(Meta meta);
-        Task<Meta> Put(int id, Meta meta);
-        Task<Meta> Delete(int id);
+        Task<List<Meta>> GetMetasByUserId(string userId);
+        Task<List<Meta>> GetByName(string name, string userId);
+        Task<Meta> GetMetaById(int id, string userId);
+        Task<Meta> Post(Meta meta, string userId);
+        Task<Meta> Put(int id, Meta meta, string userId);
+        Task<Meta> Delete(int id, string userId);
     }
 }
