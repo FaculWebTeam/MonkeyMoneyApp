@@ -1,4 +1,4 @@
-[![Generic badge](https://img.shields.io/badge/STATUS%20DO%20PROJETO-EM%20DESENVOLVIMENTO-orange)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/STATUS%20DO%20PROJETO-CONCLUIDO-green)](https://shields.io/)
 
 # Projeto de Desenvolvimento Web 2 | MonkiMoney 🐒💸
 <p><b>Membros da equipe:</b></p>
@@ -17,13 +17,13 @@
 <li><b>Estabelecer Metas de Economia:</b> Defina metas financeiras, como economizar uma quantia específica para um objetivo (viagem, emergências, compras, etc.), incentivando a disciplina e o planejamento.</li>
 
 ## Recursos utilizados
-<h3>Backend - STATUS: 🟠 Desenvolvimento </h3>
+<h3>Backend - STATUS: 🟢 Concluído </h3>
 <li>ASP.NET Core: Framework principal utilizado para construir a API RESTful.</li>
 <li>Entity Framework Core: ORM utilizado para interagir com o banco de dados.</li>
 <li>SQL Server: Banco de dados utilizado para armazenar as transações financeiras e dados dos usuários.</li>
 <li>ASP.NET Core MVC: Para estruturação das rotas e controladores da API.</li>
 
-<h3>Frontend - STATUS: 🟠 Desenvolvimento</h3>
+<h3>Frontend - STATUS: 🟢 Concluído </h3>
 <li>Razor Pages: Utilizado para criar páginas dinâmicas, permitindo a interação entre o frontend e o backend de forma simples e eficiente. Permite a construção de páginas HTML com lógica embutida no servidor.</li>
 <li>HTML5: A base estrutural das páginas, utilizando as semânticas mais recentes do HTML para garantir acessibilidade e um melhor entendimento do conteúdo para navegadores e mecanismos de busca.</li>
 <li>CSS3: Estilização das páginas utilizando propriedades modernas de CSS, como flexbox, grid, e transições, para garantir um design atrativo e responsivo.</li>
