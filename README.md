@@ -37,3 +37,11 @@
 ```bash
 git clone https://github.com/FaculWebTeam/ApiMonkeyMoney.git
 ```
+## Manual de uso
+<h3>Inserir uma ConnectionStrings</h3>
+<li>Após a clonagem do repositório, é necessário que você insira uma conexão com o banco, para que a aplicação tenha onde fazer as inserções, edições e exclusões.</li>
+<p> Vá até o arquivo "appsettings.json" na raiz do projeto e insira a conexão com o banco dentro da propriedade "DefaultConnection" no array de  "ConnectionStrings"</p>
+<h3>Criar as tabelas</h3>
+<li>Em ferramentas, no Visual Studio, clique em "Gerenciador de Pacotes do Nuget" e "Console do Gerenciador de Pacotes</li>
+<li>No console, digite o seguinte comando: update-database</li>
+<li>Depois, o projeto é para estar rodando! </li>
