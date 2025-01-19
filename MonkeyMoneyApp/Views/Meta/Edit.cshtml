@@ -1,0 +1,46 @@
+﻿@model ApiMonkeyMoney.Models.Meta
+
+@{
+    ViewBag.Title = "Editar Meta";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Editar Meta</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" action="/Meta/Edit/@Model.Id">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Nome" class="form-label">Nome</label>
+                            <input asp-for="Nome" class="form-control" placeholder="Digite o nome" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ValorObjetivo" class="form-label">Valor Objetivo</label>
+                            <input asp-for="ValorObjetivo" class="form-control" placeholder="Digite o valor objetivo" />
+                            <span asp-validation-for="ValorObjetivo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ValorAtual" class="form-label">Valor Atual</label>
+                            <input asp-for="ValorAtual" class="form-control" placeholder="Digite o valor atual" />
+                            <span asp-validation-for="ValorAtual" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block mt-4">Salvar</button>
+
+                        <div class="text-center mt-3">
+                            <a href="/Meta" class="text-muted">Voltar para a lista de Metas</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

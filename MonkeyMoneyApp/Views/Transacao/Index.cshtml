@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ApiMonkeyMoney.Models.Transacao>
+
+@{
+    ViewBag.Title = "Lista de Transações";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Lista de Transações</h2>
+
+<div class="container">
+    <form method="get" action="/Transacao/GetByTitle" class="form-inline mb-4">
+        <div class="input-group">
+            <input type="text" name="title" class="form-control" placeholder="Pesquisar Transação" />
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Título</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Banco</th>
+                    <th scope="col">Horário</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transacao in Model)
+                {
+                    <tr>
+                        <td>@transacao.Id</td>
+                        <td>@transacao.Titulo</td>
+                        <td>@transacao.Descricao</td>
+                        <td>@transacao.Tipo</td>
+                        <td>@transacao.Valor</td>
+                        <td>@transacao.Banco?.Nome</td>
+                        <td>@transacao.Horario</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Transacao", new { id = transacao.Id })" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="@Url.Action("Delete", "Transacao", new { id = transacao.Id })" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

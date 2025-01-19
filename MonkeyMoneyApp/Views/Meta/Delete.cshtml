@@ -1,0 +1,30 @@
+﻿@model ApiMonkeyMoney.Models.Meta
+
+@{
+    ViewBag.Title = "Deletar Meta";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Deletar Meta</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" action="/Meta/Delete/@Model.Id">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <p>Tem certeza de que deseja deletar a meta com valor objetivo de: <strong>@Model.ValorObjetivo</strong>?</p>
+
+                        <button type="submit" class="btn btn-danger btn-block mt-4">Deletar</button>
+
+                        <div class="text-center mt-3">
+                            <a href="/Meta" class="text-muted">Voltar para a lista de Metas</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

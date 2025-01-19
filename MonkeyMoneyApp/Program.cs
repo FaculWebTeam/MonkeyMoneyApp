@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MonkeyMoneyApp.Data;
+using MonkeyMoneyApp.Repository;
+using MonkeyMoneyApp.Repository.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,10 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<IBancoRepository, BancoRepository>();
+builder.Services.AddScoped<IMetaRepository, MetaRepository>();
+builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -36,6 +42,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

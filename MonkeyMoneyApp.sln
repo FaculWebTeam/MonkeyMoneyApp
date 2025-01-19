@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyMoneyApp", "MonkeyMoneyApp\MonkeyMoneyApp.csproj", "{3A20145E-ADC7-4C35-B6F8-71ACF087E707}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyMoneyApp", "MonkeyMoneyApp\MonkeyMoneyApp.csproj", "{3A20145E-ADC7-4C35-B6F8-71ACF087E707}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

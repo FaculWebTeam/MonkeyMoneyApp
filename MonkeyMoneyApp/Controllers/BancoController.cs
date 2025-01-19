@@ -1,80 +1,133 @@
-﻿using MonkeyMoneyApp.Data;
-using ApiMonkeyMoney.Models;
+﻿using ApiMonkeyMoney.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MonkeyMoneyApp.Repository.Interface;
+using System.Linq;
+using System.Threading.Tasks;
 
-
-namespace ApiMonkeyMoney.Controllers
+[Route("[controller]")]
+public class BancoController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BancoController : ControllerBase
+    private readonly IBancoRepository _repository;
+    private readonly UserManager<IdentityUser> _userManager;
+
+    public BancoController(IBancoRepository repository, UserManager<IdentityUser> userManager)
     {
-        private readonly ApplicationDbContext _context;
+        _repository = repository;
+        _userManager = userManager;
+    }
 
-        public BancoController(ApplicationDbContext context)
+    [Authorize]
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index()
+    {
+        var userId = _userManager.GetUserId(User);
+        var bancos = await _repository.GetBancosByUserId(userId);
+        return View(bancos);
+    }
+
+    [Authorize]
+    [HttpGet("GetByName")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var userId = _userManager.GetUserId(User);
+        var bancos = await _repository.GetBancoByName(name, userId);
+        if (bancos == null || !bancos.Any())
         {
-            _context = context;
+            return NotFound();
         }
 
-        [HttpGet]
-        public Task<List<Banco>> GetBancos()
+        return View("Index", bancos); // Retorna a View Index com os resultados da pesquisa
+    }
+
+    [Authorize]
+    [HttpGet("Create")]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create(Banco banco)
+    {
+        if (banco == null)
         {
-            return _context.Bancos.FromSqlRaw("SELECT * FROM Bancos").ToListAsync();
+            return BadRequest("Banco inválido.");
+        }
+        banco.UserId = _userManager.GetUserId(User);
+        ModelState.Remove("UserId");
+        if (!ModelState.IsValid)
+        {
+            return View(banco);
+        }
+        await _repository.Post(banco, banco.UserId);
+        return RedirectToAction("Index");
+    }
+
+    [Authorize]
+    [HttpGet("Edit/{id}")]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        var banco = await _repository.GetBancoById(id, userId);
+        if (banco == null)
+        {
+            return NotFound();
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Banco>> GetBancoById(int id)
+        return View(banco);
+    }
+
+    [Authorize]
+    [HttpPost("Edit/{id}")]
+    public async Task<IActionResult> Edit(int id, Banco banco)
+    {
+        if (id != banco.Id)
         {
-            return _context.Bancos.FromSqlInterpolated($"SELECT * FROM Bancos WHERE Id = {id}").ToListAsync();
+            return BadRequest("ID inválido.");
+        }
+        var userId = _userManager.GetUserId(User);
+        banco.UserId = userId;
+        ModelState.Remove("UserId");
+        if (!ModelState.IsValid)
+        {
+            return View(banco);
+        }
+        await _repository.Put(id, banco, userId);
+        TempData["SuccessMessage"] = "Banco atualizado com sucesso!";
+        return RedirectToAction("Index");
+    }
+
+    [Authorize]
+    [HttpGet("Delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        var banco = await _repository.GetBancoById(id, userId);
+        if (banco == null)
+        {
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Banco banco)
-        {
-            if (banco == null)
-            {
-                return BadRequest("Banco inválido.");
-            }
-            await _context.Bancos.AddAsync(banco);
-            await _context.SaveChangesAsync();
+        return View(banco);
+    }
 
-            return CreatedAtAction(nameof(Post), new { id = banco.Id }, banco);
+    [Authorize]
+    [HttpPost("Delete/{id}")]
+    public async Task<IActionResult> ConfirmDelete(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        var response = await _repository.Delete(id, userId);
+        if (response != null)
+        {
+            TempData["SuccessMessage"] = "Banco deletado com sucesso!";
+            return RedirectToAction("Index");
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Banco banco)
+        else
         {
-            if (id != banco.Id)
-            {
-                return BadRequest("id inexistente");
-            }
-
-            var existeBanco = await _context.Bancos.FindAsync(id);
-            if (existeBanco == null)
-            {
-                return NotFound("Banco não encontrado.");
-            }
-
-            _context.Entry(existeBanco).CurrentValues.SetValues(banco);
-
-            await _context.SaveChangesAsync();
-
-            var bancoAtualizado = await _context.Bancos.FindAsync(id);
-            return Ok(bancoAtualizado);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var banco = await _context.Bancos.FindAsync(id);
-            if (banco == null)
-            {
-                return NotFound("Banco não encontrado. ");
-            }
-            _context.Bancos.Remove(banco);
-            await _context.SaveChangesAsync();
-            return Ok();
+            return BadRequest("Erro na deleção");
         }
     }
 }

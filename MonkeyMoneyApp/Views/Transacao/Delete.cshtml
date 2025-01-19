@@ -1,0 +1,30 @@
+﻿@model ApiMonkeyMoney.Models.Transacao
+
+@{
+    ViewBag.Title = "Deletar Transação";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Deletar Transação</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" action="/Transacao/Delete/@Model.Id">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <p>Tem certeza de que deseja deletar a transação <strong>@Model.Titulo</strong>?</p>
+
+                        <button type="submit" class="btn btn-danger btn-block mt-4">Deletar</button>
+
+                        <div class="text-center mt-3">
+                            <a href="/Transacao/Index" class="text-muted">Voltar para a lista de Transações</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

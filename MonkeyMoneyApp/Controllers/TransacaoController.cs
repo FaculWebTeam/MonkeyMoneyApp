@@ -1,80 +1,140 @@
 ﻿using ApiMonkeyMoney.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MonkeyMoneyApp.Data;
+using Microsoft.AspNetCore.Identity;
+using MonkeyMoneyApp.Repository.Interface;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiMonkeyMoney.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TransacaoController : ControllerBase
+    [Route("[controller]")]
+    public class TransacaoController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITransacaoRepository _repository;
+        private readonly IBancoRepository _bancoRepository;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TransacaoController(ApplicationDbContext context)
+        public TransacaoController(ITransacaoRepository repository, IBancoRepository bancoRepository, UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _repository = repository;
+            _bancoRepository = bancoRepository;
+            _userManager = userManager;
         }
 
-        [HttpGet]
-        public Task<List<Transacao>> GetTransacoes()
+        [Authorize]
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index()
         {
-            return _context.Transacoes.FromSqlRaw("SELECT * FROM Transacoes").ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var transacoes = await _repository.GetTransacoesByUserId(userId);
+            return View(transacoes);
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Transacao>> GetTransacoesById(int id)
+        [Authorize]
+        [HttpGet("GetByTitle")]
+        public async Task<IActionResult> GetByTitle(string title)
         {
-            return _context.Transacoes.FromSqlInterpolated($"SELECT * FROM Transacoes WHERE Id = {id}").ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var transacoes = await _repository.GetTransacaoByTitle(title, userId);
+            if (transacoes == null || !transacoes.Any())
+            {
+                return NotFound();
+            }
+
+            return View("Index", transacoes);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Transacao transacao)
+        [Authorize]
+        [HttpGet("Create")]
+        public async Task<IActionResult> Create()
         {
+            var userId = _userManager.GetUserId(User);
+            ViewBag.Bancos = await _bancoRepository.GetBancosByUserId(userId);
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create(Transacao transacao)
+        {
+            var userId = _userManager.GetUserId(User);
+            ModelState.Remove("UserId");
+            if (!ModelState.IsValid)
+            {
+                var user = _userManager.GetUserId(User);
+                ViewBag.Bancos = await _bancoRepository.GetBancosByUserId(user);
+                return View(transacao);
+            }
+            await _repository.Post(transacao, userId);
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var transacao = await _repository.GetTransacaoById(id, userId);
             if (transacao == null)
             {
-                return BadRequest("Transação inválida.");
+                return NotFound();
             }
-            await _context.Transacoes.AddAsync(transacao);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Post), new { id = transacao.Id }, transacao);
+            ViewBag.Bancos = await _bancoRepository.GetBancosByUserId(userId);
+            return View(transacao);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Transacao transacao)
+        [Authorize]
+        [HttpPost("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id, Transacao transacao)
         {
             if (id != transacao.Id)
             {
-                return BadRequest("id inexistente");
+                return BadRequest("ID inválido.");
             }
+            var userId = _userManager.GetUserId(User);
+            transacao.UserId = userId;
+            ModelState.Remove("UserId");
 
-            var existeTransacao = await _context.Transacoes.FindAsync(id);
-            if (existeTransacao == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound("Transação não encontrada.");
+                ViewBag.Bancos = await _bancoRepository.GetBancosByUserId(userId);
+                return View(transacao);
             }
-
-            _context.Entry(existeTransacao).CurrentValues.SetValues(transacao);
-
-            await _context.SaveChangesAsync();
-
-            var transacaoAtualizada = await _context.Transacoes.FindAsync(id);
-            return Ok(transacaoAtualizada);
+            await _repository.Update(id, transacao, userId);
+            return RedirectToAction("Index");
         }
 
 
-        [HttpDelete("{id}")]
+        [Authorize]
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var transacao = await _context.Transacoes.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var transacao = await _repository.GetTransacaoById(id, userId);
             if (transacao == null)
             {
-                return NotFound("Transaçao não encontrada.");
+                return NotFound();
             }
-            _context.Transacoes.Remove(transacao);
-            await _context.SaveChangesAsync();
-            return Ok();
+
+            return View(transacao);
+        }
+
+        [Authorize]
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var response = await _repository.Delete(id, userId);
+            if (response != null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest("Erro na deleção");
+            }
         }
     }
 }

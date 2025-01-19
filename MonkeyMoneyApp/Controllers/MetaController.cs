@@ -1,73 +1,131 @@
 ﻿using ApiMonkeyMoney.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MonkeyMoneyApp.Data;
-
+using Microsoft.AspNetCore.Identity;
+using MonkeyMoneyApp.Repository.Interface;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiMonkeyMoney.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MetaController : ControllerBase
+    [Route("[controller]")]
+    public class MetaController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMetaRepository _repository;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MetaController(ApplicationDbContext context)
+        public MetaController(IMetaRepository repository, UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _repository = repository;
+            _userManager = userManager;
         }
 
-        [HttpGet]
-        public Task<List<Meta>> GetMetas()
+        [Authorize]
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index()
         {
-            return _context.Metas.FromSqlRaw("SELECT * FROM Metas").ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var metas = await _repository.GetMetasByUserId(userId);
+            return View(metas);
         }
 
-        [HttpGet("{id}")]
-        public Task<List<Meta>> GetMetaById(int id)
+        [Authorize]
+        [HttpGet("GetByName")]
+        public async Task<IActionResult> GetByName(string name)
         {
-            return _context.Metas.FromSqlInterpolated($"SELECT * FROM Metas WHERE Id = {id}").ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var metas = await _repository.GetByName(name, userId);
+            if (metas == null || !metas.Any())
+            {
+                return View("Index", new List<Meta>());
+            }
+
+            return View("Index", metas);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Meta meta)
+        [Authorize]
+        [HttpGet("Create")]
+        public IActionResult Create()
         {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create(Meta meta)
+        {
+            var userId = _userManager.GetUserId(User);
+            meta.UserId = userId;
+            ModelState.Remove("UserId");
+            if (!ModelState.IsValid)
+            {
+                return View(meta);
+            }
+            await _repository.Post(meta, userId);
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var meta = await _repository.GetMetaById(id, userId);
             if (meta == null)
             {
-                return BadRequest("Meta inválida.");
+                return NotFound();
             }
-            await _context.Metas.AddAsync(meta);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Post), new { id = meta.Id }, meta);
+            return View(meta);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Meta meta)
+        [Authorize]
+        [HttpPost("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id, Meta meta)
         {
-            var existeMeta = await _context.Metas.FindAsync(id);
-            if(existeMeta == null)
+            if (id != meta.Id)
             {
-                return NotFound("Meta não encontrada.");
+                return BadRequest("ID inválido.");
             }
-            _context.Entry(existeMeta).CurrentValues.SetValues(meta);
-            await _context.SaveChangesAsync();
-
-            var metaAtualizada = await _context.Metas.FindAsync(id);
-            return Ok(metaAtualizada);
+            var userId = _userManager.GetUserId(User);
+            meta.UserId = userId;
+            ModelState.Remove("UserId");
+            if (!ModelState.IsValid)
+            {
+                return View(meta);
+            }
+            await _repository.Put(id, meta, userId);
+            return RedirectToAction("Index");
         }
 
-        [HttpDelete("{id}")]
+        [Authorize]
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var meta = await _context.Metas.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var meta = await _repository.GetMetaById(id, userId);
             if (meta == null)
             {
-                return NotFound("Meta não encontrada.");
+                return NotFound();
             }
-            _context.Remove(meta);
-            await _context.SaveChangesAsync();
-            return Ok();
+
+            return View(meta);
+        }
+
+        [Authorize]
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var response = await _repository.Delete(id, userId);
+            if (response != null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest("Erro na deleção");
+            }
         }
     }
 }

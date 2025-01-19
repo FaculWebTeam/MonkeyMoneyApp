@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ApiMonkeyMoney.Models.Meta>
+
+@{
+    ViewBag.Title = "Lista de Metas";
+    Layout = "~/Views/Shared/_LayoutWithSidebar.cshtml";
+}
+
+<h2 class="text-center mb-4">Lista de Metas</h2>
+
+<div class="container">
+    <form method="get" action="/Meta/GetByName" class="form-inline mb-4">
+        <div class="input-group">
+            <input type="text" name="name" class="form-control" placeholder="Pesquisar Meta" />
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Valor Objetivo</th>
+                    <th scope="col">Valor Atual</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var meta in Model)
+                {
+                    <tr>
+                        <td>@meta.Id</td>
+                        <td>@meta.Nome</td>
+                        <td>@meta.ValorObjetivo</td>
+                        <td>@meta.ValorAtual</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Meta", new { id = meta.Id })" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="@Url.Action("Delete", "Meta", new { id = meta.Id })" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
