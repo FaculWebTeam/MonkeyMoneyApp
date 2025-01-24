@@ -9,6 +9,7 @@
 
 <h3>Sobre o projeto</h3>
 <p>O MonkiMoney é uma aplicação de Gestão Financeira Pessoal desenvolvida para ajudar os usuários a gerenciar seus gastos e receitas de maneira fácil e eficiente. A plataforma oferece uma visão clara das finanças, permitindo que os usuários façam um controle detalhado de suas transações financeiras.</p>
+<p><a href=https://youtu.be/qZWbuT7aLdk>Vídeo demonstrativo de funções</a></p>
 
 <p>Com o MonkiMoney, você pode:</p>
 
