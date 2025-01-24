@@ -37,6 +37,7 @@ namespace ApiMonkeyMoney.Controllers
             var metas = await _repository.GetByName(name, userId);
             if (metas == null || !metas.Any())
             {
+                ViewBag.Mensagem = "Nenhuma meta encontrada com o título pesquisado.";
                 return View("Index", new List<Meta>());
             }
 

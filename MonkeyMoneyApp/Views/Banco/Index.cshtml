@@ -14,7 +14,12 @@
             <button type="submit" class="btn btn-primary">Pesquisar</button>
         </div>
     </form>
-
+    @if (!string.IsNullOrEmpty(ViewBag.Mensagem as string))
+    {
+        <div class="alert alert-warning" role="alert">
+            @ViewBag.Mensagem
+        </div>
+    }
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead class="thead-light">

@@ -39,6 +39,7 @@ namespace ApiMonkeyMoney.Controllers
             var transacoes = await _repository.GetTransacaoByTitle(title, userId);
             if (transacoes == null || !transacoes.Any())
             {
+                ViewBag.Mensagem = "Nenhuma transação encontrada com o título pesquisado.";
                 return NotFound();
             }
 

@@ -33,12 +33,14 @@ public class BancoController : Controller
     {
         var userId = _userManager.GetUserId(User);
         var bancos = await _repository.GetBancoByName(name, userId);
+
         if (bancos == null || !bancos.Any())
         {
-            return NotFound();
+            ViewBag.Mensagem = "Nenhum banco encontrado com o nome pesquisado.";
+            return View("Index", new List<Banco>()); 
         }
 
-        return View("Index", bancos); // Retorna a View Index com os resultados da pesquisa
+        return View("Index", bancos);
     }
 
     [Authorize]
